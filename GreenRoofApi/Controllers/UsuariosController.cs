@@ -1,5 +1,7 @@
-﻿using GreenRoofApi.DTOs;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using GreenRoofApi.DTOs;
+using GreenRoofApi.Services;
 
 namespace GreenRoofApi.Controllers
 {
@@ -14,26 +16,39 @@ namespace GreenRoofApi.Controllers
             _usuarioService = usuarioService;
         }
 
+        // Registro de novo usuário
         [HttpPost("register")]
-        public async Task<ActionResult> Register([FromBody] UsuarioRegisterDTO usuarioRegisterDTO)
+        public async Task<IActionResult> Register([FromBody] UsuarioRegisterDTO usuarioDTO)
         {
-            var result = await _usuarioService.RegisterAsync(usuarioRegisterDTO);
-            if (result == null)
+            var result = await _usuarioService.RegisterAsync(usuarioDTO);
+            if (!result.Succeeded)
             {
-                return BadRequest(result);
+                return BadRequest(result.Errors);
             }
-            return Ok("Usuário registrado com sucesso.");
+
+            return Ok(new { result.Token });
         }
 
+        // Login de usuário
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login([FromBody] UsuarioLoginDTO usuarioLoginDTO)
+        public async Task<IActionResult> Login([FromBody] UsuarioLoginDTO loginDTO)
         {
-            var token = await _usuarioService.AuthenticateAsync(usuarioLoginDTO);
+            var token = await _usuarioService.AuthenticateAsync(loginDTO);
             if (token == null)
             {
                 return Unauthorized("Usuário ou senha inválidos.");
             }
-            return Ok(token);
+
+            return Ok(new { token });
+        }
+
+        // Listar usuários (apenas Admin)
+        [HttpGet]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllUsuarios()
+        {
+            var usuarios = await _usuarioService.GetAllAsync();
+            return Ok(usuarios);
         }
     }
 }

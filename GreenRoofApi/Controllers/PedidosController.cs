@@ -1,6 +1,8 @@
-﻿using GreenRoofApi.DTOs;
-using GreenRoofApi.Services;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using GreenRoofApi.Models;
+using GreenRoofApi.Services;
+using GreenRoofApi.DTOs;
 
 namespace GreenRoofApi.Controllers
 {
@@ -15,43 +17,33 @@ namespace GreenRoofApi.Controllers
             _pedidoService = pedidoService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<PedidoDTO>>> GetAll()
+        // Criar pedido (Cliente)
+        [HttpPost]
+        [Authorize(Roles = "Cliente")]
+        public async Task<IActionResult> CreatePedido([FromBody] PedidoDTO pedido)
         {
-            var pedidos = await _pedidoService.GetAllAsync();
-            return Ok(pedidos);
+            var newPedido = await _pedidoService.CreateAsync(pedido);
+            return CreatedAtAction(nameof(GetPedido), new { id = newPedido.Id }, newPedido);
         }
 
-        [HttpGet("{id}")]
-        public async Task<ActionResult<PedidoDTO>> GetById(int id)
+        // Atualizar status de pedido (Admin)
+        [HttpPut("{id}/status")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] string status)
+        {
+            var updatedPedido = await _pedidoService.UpdateStatusAsync(id,status);
+            if (updatedPedido == null) return NotFound();
+            return Ok(updatedPedido);
+        }
+
+        // Listar pedidos
+        [HttpGet]
+        public async Task<IActionResult> GetPedido(int id)
         {
             var pedido = await _pedidoService.GetByIdAsync(id);
-            if (pedido == null)
-            {
-                return NotFound();
-            }
+            if (pedido == null) return NotFound();
             return Ok(pedido);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Create([FromBody] PedidoDTO pedidoDTO)
-        {
-            await _pedidoService.CreateAsync(pedidoDTO);
-            return Ok();
-        }
-
-        [HttpPut("{id}")]
-        public async Task<ActionResult> Update(int id, [FromBody] PedidoDTO pedidoDTO)
-        {
-            await _pedidoService.UpdateAsync(id, pedidoDTO);
-            return Ok();
-        }
-
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
-        {
-            await _pedidoService.DeleteAsync(id);
-            return Ok();
         }
     }
 }
+

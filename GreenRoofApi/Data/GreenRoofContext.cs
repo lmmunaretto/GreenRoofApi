@@ -12,7 +12,7 @@ namespace GreenRoofApi.Data
         public DbSet<Fornecedor> Fornecedores { get; set; }
         public DbSet<Produto> Produtos { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
-        public DbSet<ItemPedido> ItensPedido { get; set; }
+        public DbSet<ItemPedido> ItensPedidos { get; set; }
         public DbSet<Pagamento> Pagamentos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
 

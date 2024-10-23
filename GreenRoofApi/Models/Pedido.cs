@@ -8,7 +8,7 @@ namespace GreenRoofApi.Models
         public int Id { get; set; }
 
         [ForeignKey("Cliente")]
-        public int? ClienteId { get; set; }
+        public int ClienteId { get; set; }
         public Cliente Cliente { get; set; }
 
         [Required]

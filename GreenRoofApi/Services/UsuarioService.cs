@@ -1,16 +1,19 @@
 ﻿using GreenRoofApi.Data;
 using GreenRoofApi.DTOs;
 using GreenRoofApi.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace GreenRoofApi.Controllers
+namespace GreenRoofApi.Services
 {
     public class UsuarioService
     {
         private readonly GreenRoofContext _context;
+        private readonly TokenService _tokenService;
 
-        public UsuarioService(GreenRoofContext context)
+        public UsuarioService(GreenRoofContext context, TokenService tokenService)
         {
             _context = context;
+            _tokenService = tokenService;
         }
 
         public async Task<List<UsuarioDTO>> GetAllAsync()
@@ -95,7 +98,7 @@ namespace GreenRoofApi.Controllers
             };
         }
 
-        public async Task<UsuarioDTO> RegisterAsync(UsuarioRegisterDTO usuarioDTO)
+        public async Task<UsuarioResultDTO> RegisterAsync(UsuarioRegisterDTO usuarioDTO)
         {
             // Verificar se o e-mail já está em uso
             var existingUser = await _context.Usuarios.SingleOrDefaultAsync(u => u.Email == usuarioDTO.Email);
@@ -116,8 +119,14 @@ namespace GreenRoofApi.Controllers
             _context.Usuarios.Add(novoUsuario);
             await _context.SaveChangesAsync();
 
-            return new UsuarioDTO
+
+            // Gerar o token JWT após o registro bem-sucedido
+            var token = await _tokenService.GenerateJwtToken(novoUsuario);
+
+            return new UsuarioResultDTO
             {
+                Succeeded = true,
+                Token = token,
                 Id = novoUsuario.Id,
                 Nome = novoUsuario.Nome,
                 Email = novoUsuario.Email,

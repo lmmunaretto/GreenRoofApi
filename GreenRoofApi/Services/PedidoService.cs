@@ -1,6 +1,7 @@
 ﻿using GreenRoofApi.Data;
 using GreenRoofApi.DTOs;
 using GreenRoofApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GreenRoofApi.Services
 {
@@ -41,7 +42,7 @@ namespace GreenRoofApi.Services
             };
         }
 
-        public async Task CreateAsync(PedidoDTO pedidoDTO)
+        public async Task<Pedido> CreateAsync(PedidoDTO pedidoDTO)
         {
             var pedido = new Pedido
             {
@@ -53,6 +54,8 @@ namespace GreenRoofApi.Services
 
             _context.Pedidos.Add(pedido);
             await _context.SaveChangesAsync();
+
+            return pedido;
         }
 
         public async Task UpdateAsync(int id, PedidoDTO pedidoDTO)
@@ -67,6 +70,22 @@ namespace GreenRoofApi.Services
 
             _context.Pedidos.Update(pedido);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<Pedido> UpdateStatusAsync(int id, string status)
+        {
+            var pedido = await _context.Pedidos.FindAsync(id);
+            if (pedido == null)
+            {
+                return null;
+            }
+
+            pedido.Status = status;
+
+            _context.Pedidos.Update(pedido);
+            await _context.SaveChangesAsync();
+
+            return pedido;
         }
 
         public async Task DeleteAsync(int id)

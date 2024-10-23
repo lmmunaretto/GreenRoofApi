@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  greenroofapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Server=railway-postgres;Database=greenroofdb;User Id=postgres;Password=your_password;
+    depends_on:
+      - railway-postgres
+
+  railway-postgres:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your_password
+      POSTGRES_DB: greenroofdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

@@ -22,4 +22,15 @@
         public string Senha { get; set; }
         public string Role { get; set; } = "Cliente"; // Definindo o role padrão como Cliente
     }
+
+    public class UsuarioResultDTO
+    {
+        public bool Succeeded { get; set; }
+        public string Token { get; set; }
+        public int Id { get; set; }
+        public string Nome { get; set; }
+        public string Email { get; set; }
+        public string Role { get; set; }
+        public IEnumerable<string> Errors { get; set; }
+    }
 }
