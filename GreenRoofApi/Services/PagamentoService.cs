@@ -3,7 +3,7 @@ using GreenRoofApi.DTOs;
 using GreenRoofApi.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace GreenRoofApi.Controllers
+namespace GreenRoofApi.Services
 {
     public class PagamentoService
     {

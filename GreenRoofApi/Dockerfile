@@ -1,26 +1,23 @@
-# Etapa 1: Imagem base para construir a aplicação
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
+# Fase de base
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
+EXPOSE 80
 
-# Copiar arquivos .csproj e restaurar dependências
-COPY *.csproj ./
-RUN dotnet restore
+# Fase de build
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
+WORKDIR /src
+COPY ["GreenRoofApi.csproj", "./"]
+RUN dotnet restore "./GreenRoofApi.csproj"
+COPY . .
+WORKDIR "/src/."
+RUN dotnet build "GreenRoofApi.csproj" -c Release -o /app/build
 
-# Copiar o restante dos arquivos do projeto e compilar a aplicação
-COPY . ./
-RUN dotnet publish -c Release -o out
+# Fase de publish
+FROM build AS publish
+RUN dotnet publish "GreenRoofApi.csproj" -c Release -o /app/publish
 
-# Etapa 2: Imagem para rodar a aplicação
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
+# Fase final
+FROM base AS final
 WORKDIR /app
-COPY --from=build-env /app/out .
-
-# Variável de ambiente para a porta que o Railway vai usar
-ENV ASPNETCORE_URLS=http://+:8080
-
-# Expor a porta
-EXPOSE 8080
-
-# Comando para rodar a aplicação
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "GreenRoofApi.dll"]
-

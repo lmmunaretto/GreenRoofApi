@@ -13,7 +13,7 @@ public class TokenService
         _config = config;
     }
 
-    public async Task<string> GenerateJwtToken(Usuario usuario)
+    public async Task<string> GenerateTokenAsync(Usuario usuario)
     {
         var claims = new[]
         {
@@ -29,11 +29,11 @@ public class TokenService
             _config["Jwt:Issuer"],
             _config["Jwt:Audience"],
             claims,
-            expires: DateTime.Now.AddHours(3),
+            expires: DateTime.Now.AddHours(1),
             signingCredentials: creds
         );
 
-        return new JwtSecurityTokenHandler().WriteToken(token);
+        return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
     }
 }
 

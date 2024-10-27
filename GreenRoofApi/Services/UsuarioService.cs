@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GreenRoofApi.Services
 {
-    public class UsuarioService
+    public class UsuarioService : IUsuarioService
     {
         private readonly GreenRoofContext _context;
         private readonly TokenService _tokenService;
@@ -104,7 +104,7 @@ namespace GreenRoofApi.Services
             var existingUser = await _context.Usuarios.SingleOrDefaultAsync(u => u.Email == usuarioDTO.Email);
             if (existingUser != null)
             {
-                return null; // Já existe um usuário com este e-mail
+                return new UsuarioResultDTO { Succeeded = false, Errors = new[] { "Email já está em uso." } };
             }
 
             // Criar novo usuário
@@ -121,16 +121,12 @@ namespace GreenRoofApi.Services
 
 
             // Gerar o token JWT após o registro bem-sucedido
-            var token = await _tokenService.GenerateJwtToken(novoUsuario);
+            var token = await _tokenService.GenerateTokenAsync(novoUsuario);
 
             return new UsuarioResultDTO
             {
                 Succeeded = true,
-                Token = token,
-                Id = novoUsuario.Id,
-                Nome = novoUsuario.Nome,
-                Email = novoUsuario.Email,
-                Role = novoUsuario.Role
+                Token = token
             };
         }
     }
