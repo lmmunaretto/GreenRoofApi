@@ -8,5 +8,5 @@
   ASPNETCORE_ENVIRONMENT = "Production"
   ConnectionStrings__DefaultConnection = "Host=junction.proxy.rlwy.net;Port=17860;Database=railway;Username=postgres;Password=qFuhtVIWRUzZRjxYMugwndNfTwfGQucX;SSL Mode=Require;Trust Server Certificate=true"
   Jwt__Key = "2a9d07839f1aa0a17e9bb01b7bf3730516819874878"
-  Jwt__Issuer = "https://seuapp.railway.app"
-  Jwt__Audience = "https://seuapp.railway.app"
+  Jwt__Issuer = "https://greenroofapi-production.up.railway.app"
+  Jwt__Audience = "https://greenroofapi-production.up.railway.app"
