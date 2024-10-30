@@ -2,8 +2,6 @@
 [build]
   builder = "dotnet"
 
-[dotnet]
-  version = "7.0" 
 
 # Configurações de ambiente
 [env]
