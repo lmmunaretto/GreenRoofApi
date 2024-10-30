@@ -1,19 +1,27 @@
-# Use a imagem base do SDK .NET 7
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
+# Usar a imagem base do SDK .NET 7
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 
-# Defina o diretório de trabalho
+# Definir o diretório de trabalho dentro do container
 WORKDIR /app
 
-# Copie o csproj e restaure as dependências
+# Copiar o arquivo de projeto e restaurar as dependências
 COPY *.csproj ./
 RUN dotnet restore
 
-# Copie o restante dos arquivos e construa o projeto
+# Copiar todos os outros arquivos do projeto
 COPY . ./
+
+# Compilar o projeto
 RUN dotnet publish -c Release -o out
 
-# Gere a imagem final
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
+# Usar a imagem base do runtime .NET 7
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
+
+# Definir o diretório de trabalho
 WORKDIR /app
-COPY --from=build-env /app/out .
+
+# Copiar os arquivos publicados para o diretório de trabalho
+COPY --from=build /app/out ./
+
+# Definir o comando para iniciar a aplicação
 ENTRYPOINT ["dotnet", "GreenRoofApi.dll"]
