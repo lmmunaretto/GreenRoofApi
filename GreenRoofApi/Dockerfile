@@ -5,14 +5,14 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /app
 
 # Copiar o arquivo de projeto e restaurar as dependências
-COPY *.csproj ./
-RUN dotnet restore
+COPY GreenRoofApi/GreenRoofApi.csproj ./GreenRoofApi/
+RUN dotnet restore GreenRoofApi/GreenRoofApi.csproj
 
 # Copiar todos os outros arquivos do projeto
-COPY . ./
+COPY . .
 
 # Compilar o projeto
-RUN dotnet publish -c Release -o out
+RUN dotnet publish GreenRoofApi/GreenRoofApi.csproj -c Release -o /app/out
 
 # Usar a imagem base do runtime .NET 7
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
