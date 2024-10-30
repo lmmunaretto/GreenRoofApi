@@ -1,0 +1,4 @@
+[build]
+  # Usar o SDK do .NET 7.0
+  builder = "dotnet"
+  target = "GreenRoofApi/GreenRoofApi.csproj"
