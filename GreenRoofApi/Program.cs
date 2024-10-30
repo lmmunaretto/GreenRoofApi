@@ -8,6 +8,7 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Configuração da autenticação JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -27,11 +28,23 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-// Add services to the container.
+// Configuração do CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        builder =>
+        {
+            builder.AllowAnyOrigin()
+                   .AllowAnyMethod()
+                   .AllowAnyHeader();
+        });
+});
+
+// Configuração do banco de dados
 builder.Services.AddDbContext<GreenRoofContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Registre o TokenService
+// Registro dos serviços
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<ClienteService>();
@@ -75,16 +88,23 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Configuração do pipeline de requisições
+app.UseHttpsRedirection();
+app.UseCors("AllowAll"); // Habilita o CORS
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Habilitar Swagger apenas no ambiente de desenvolvimento
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "GreenRoofApi V1");
+        c.RoutePrefix = string.Empty; // Para acessar Swagger na raiz do app
+    });
 }
 
-app.UseHttpsRedirection();
-app.UseAuthentication();
-app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
