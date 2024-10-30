@@ -1,18 +1,19 @@
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+# Use a imagem base do SDK .NET 7
+FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
+
+# Defina o diretório de trabalho
 WORKDIR /app
-EXPOSE 80
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
-COPY . .
-RUN dotnet restore "GreenRoofApi/GreenRoofApi.csproj"
-WORKDIR "/src/GreenRoofApi"
-RUN dotnet build "GreenRoofApi.csproj" -c Release -o /app/build
+# Copie o csproj e restaure as dependências
+COPY *.csproj ./
+RUN dotnet restore
 
-FROM build AS publish
-RUN dotnet publish "GreenRoofApi.csproj" -c Release -o /app/publish
+# Copie o restante dos arquivos e construa o projeto
+COPY . ./
+RUN dotnet publish -c Release -o out
 
-FROM base AS final
+# Gere a imagem final
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build-env /app/out .
 ENTRYPOINT ["dotnet", "GreenRoofApi.dll"]
