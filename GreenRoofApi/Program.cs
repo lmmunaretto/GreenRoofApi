@@ -94,16 +94,13 @@ app.UseCors("AllowAll"); // Habilita o CORS
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Habilitar Swagger apenas no ambiente de desenvolvimento
-if (app.Environment.IsDevelopment())
+// Habilitar Swagger em todos os ambientes
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "GreenRoofApi V1");
-        c.RoutePrefix = string.Empty; // Para acessar Swagger na raiz do app
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "GreenRoofApi V1");
+    c.RoutePrefix = string.Empty; // Para acessar Swagger na raiz do app
+});
 
 app.MapControllers();
 
