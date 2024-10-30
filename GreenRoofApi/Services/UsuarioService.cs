@@ -81,7 +81,7 @@ namespace GreenRoofApi.Services
             await _context.SaveChangesAsync();
         }
 
-        public async Task<UsuarioDTO> AuthenticateAsync(UsuarioLoginDTO usuarioLogin)
+        public async Task<UsuarioResultDTO> AuthenticateAsync(UsuarioLoginDTO usuarioLogin)
         {
             string email = usuarioLogin.Email;
             string senha = usuarioLogin.Senha;
@@ -89,12 +89,12 @@ namespace GreenRoofApi.Services
             var usuario = await _context.Usuarios.SingleOrDefaultAsync(u => u.Email == email && u.Senha == senha);
             if (usuario == null) return null;
 
-            return new UsuarioDTO
+            var token = await _tokenService.GenerateTokenAsync(usuario);
+
+            return new UsuarioResultDTO
             {
-                Id = usuario.Id,
-                Nome = usuario.Nome,
-                Email = usuario.Email,
-                Role = usuario.Role
+                Succeeded = true,
+                Token = token
             };
         }
 
@@ -103,8 +103,10 @@ namespace GreenRoofApi.Services
             // Verificar se o e-mail já está em uso
             var existingUser = await _context.Usuarios.SingleOrDefaultAsync(u => u.Email == usuarioDTO.Email);
             if (existingUser != null)
-            {
-                return new UsuarioResultDTO { Succeeded = false, Errors = new[] { "Email já está em uso." } };
+            {           
+                return new UsuarioResultDTO { Succeeded = false, Errors = new[] { "Email já está em uso." } 
+                
+                };
             }
 
             // Criar novo usuário
@@ -113,8 +115,10 @@ namespace GreenRoofApi.Services
                 Nome = usuarioDTO.Nome,
                 Email = usuarioDTO.Email,
                 Senha = usuarioDTO.Senha, // Aqui você pode adicionar a lógica de criptografia da senha
-                Role = usuarioDTO.Role
+                Role = usuarioDTO.Role,
             };
+
+            novoUsuario.Role = char.ToUpper(novoUsuario.Role[0]) + novoUsuario.Role.Substring(1).ToLower();
 
             _context.Usuarios.Add(novoUsuario);
             await _context.SaveChangesAsync();

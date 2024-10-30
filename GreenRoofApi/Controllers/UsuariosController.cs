@@ -16,7 +16,6 @@ namespace GreenRoofApi.Controllers
             _usuarioService = usuarioService;
         }
 
-        // Registro de novo usuário
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UsuarioRegisterDTO usuarioDTO)
         {
@@ -29,7 +28,6 @@ namespace GreenRoofApi.Controllers
             return Ok(new { result.Token });
         }
 
-        // Login de usuário
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UsuarioLoginDTO loginDTO)
         {
@@ -42,7 +40,6 @@ namespace GreenRoofApi.Controllers
             return Ok(new { token });
         }
 
-        // Listar usuários (apenas Admin)
         [HttpGet]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllUsuarios()

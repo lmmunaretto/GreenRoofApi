@@ -6,22 +6,10 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "80:80"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__DefaultConnection=Server=railway-postgres;Database=greenroofdb;User Id=postgres;Password=LuisMar290991;
-    depends_on:
-      - railway-postgres
-
-  railway-postgres:
-    image: postgres:14
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: LuisMar290991
-      POSTGRES_DB: greenroofdb
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-volumes:
-  pgdata:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__DefaultConnection: "Host=junction.proxy.rlwy.net;Port=17860;Database=railway;Username=postgres;Password=qFuhtVIWRUzZRjxYMugwndNfTwfGQucX;SSL Mode=Require;Trust Server Certificate=true"
+      Jwt__Key: "2a9d07839f1aa0a17e9bb01b7bf3730516819874878"
+      Jwt__Issuer: "GreenApp"
+      Jwt__Audience: "GreenAppUsers"

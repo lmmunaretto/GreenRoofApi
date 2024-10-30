@@ -21,7 +21,7 @@ namespace GreenRoofApi.Services
         Task DeleteAsync(int id);
 
 
-        Task<UsuarioDTO> AuthenticateAsync(UsuarioLoginDTO usuarioLogin);
+        Task<UsuarioResultDTO> AuthenticateAsync(UsuarioLoginDTO usuarioLogin);
 
 
         Task<UsuarioResultDTO> RegisterAsync(UsuarioRegisterDTO usuarioDTO);
