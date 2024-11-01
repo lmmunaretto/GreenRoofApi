@@ -44,7 +44,7 @@ namespace GreenRoofApi.Services
             };
         }
 
-        public async Task CreateAsync(ClienteDTO clienteDTO)
+        public async Task CreateAsync(ClienteRequestDTO clienteDTO)
         {
             var cliente = new Cliente
             {

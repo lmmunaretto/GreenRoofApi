@@ -103,9 +103,12 @@ namespace GreenRoofApi.Services
             // Verificar se o e-mail já está em uso
             var existingUser = await _context.Usuarios.SingleOrDefaultAsync(u => u.Email == usuarioDTO.Email);
             if (existingUser != null)
-            {           
-                return new UsuarioResultDTO { Succeeded = false, Errors = new[] { "Email já está em uso." } 
-                
+            {
+                return new UsuarioResultDTO
+                {
+                    Succeeded = false,
+                    Errors = new[] { "Email já está em uso." }
+
                 };
             }
 

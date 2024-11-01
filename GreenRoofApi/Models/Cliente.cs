@@ -12,21 +12,21 @@ namespace GreenRoofApi.Models
 
         [Required]
         [EmailAddress]
-        [StringLength (100)]
+        [StringLength(100)]
         public string Email { get; set; }
 
         [Required]
         [Phone]
         [StringLength(15)]
-        public string Telefone {  get; set; }
+        public string Telefone { get; set; }
 
         [Required]
         [StringLength(11, MinimumLength = 11)]
-        public string Cpf {  get; set; }
+        public string Cpf { get; set; }
 
         [Required]
         [StringLength(255)]
-        public string Endereco {  get; set; }
+        public string Endereco { get; set; }
 
         public virtual ICollection<Pedido> Pedidos { get; set; }
 

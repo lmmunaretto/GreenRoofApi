@@ -34,7 +34,7 @@ namespace GreenRoofApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] ItemPedidoDTO itemPedidoDTO)
+        public async Task<ActionResult> Create([FromBody] ItensPedidosDTO itemPedidoDTO)
         {
             await _itensPedidoService.CreateAsync(itemPedidoDTO);
             return Ok();

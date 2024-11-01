@@ -44,7 +44,7 @@ namespace GreenRoofApi.Services
             };
         }
 
-        public async Task CreateAsync(PagamentoDTO pagamentoDTO)
+        public async Task CreateAsync(PagamentosRequestDTO pagamentoDTO)
         {
             var pagamento = new Pagamento
             {

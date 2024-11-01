@@ -8,16 +8,18 @@ namespace GreenRoofApi.Services
     public class ProdutoService
     {
         private readonly GreenRoofContext _context;
+        private readonly FornecedorService _fornecedorService;
 
-        public ProdutoService(GreenRoofContext context)
+        public ProdutoService(GreenRoofContext context, FornecedorService fornecedorService)
         {
             _context = context;
+            _fornecedorService = fornecedorService;
         }
 
         public async Task<List<ProdutoDTO>> GetAllAsync()
         {
             var produtos = await _context.Produtos.ToListAsync();
-            return produtos.Select(p => new ProdutoDTO
+            var produtosList = produtos.Select(p => new ProdutoDTO
             {
                 Id = p.Id,
                 Nome = p.Nome,
@@ -27,12 +29,22 @@ namespace GreenRoofApi.Services
                 Tipo = p.Tipo,
                 FornecedorId = p.FornecedorId
             }).ToList();
+
+            foreach (var item in produtosList)
+            {
+                var fornecedor = await _fornecedorService.GetByIdAsync(item.FornecedorId);
+                item.Fornecedor = fornecedor;
+            }
+
+            return produtosList;
         }
 
         public async Task<ProdutoDTO> GetByIdAsync(int id)
         {
             var produto = await _context.Produtos.FindAsync(id);
             if (produto == null) return null;
+
+            var fornecedor = await _fornecedorService.GetByIdAsync(produto.FornecedorId);
 
             return new ProdutoDTO
             {
@@ -42,11 +54,12 @@ namespace GreenRoofApi.Services
                 Quantidade = produto.Quantidade,
                 Preco = produto.Preco,
                 Tipo = produto.Tipo,
-                FornecedorId = produto.FornecedorId
+                FornecedorId = produto.FornecedorId,
+                Fornecedor = fornecedor,
             };
         }
 
-        public async Task<Produto> CreateAsync(ProdutoDTO produtoDTO)
+        public async Task<Produto> CreateAsync(ProdutosRequestDTO produtoDTO)
         {
             var produto = new Produto
             {

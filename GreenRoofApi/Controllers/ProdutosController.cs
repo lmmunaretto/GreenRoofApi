@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using GreenRoofApi.Models;
+﻿using GreenRoofApi.DTOs;
 using GreenRoofApi.Services;
-using GreenRoofApi.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GreenRoofApi.Controllers
 {
@@ -28,7 +27,7 @@ namespace GreenRoofApi.Controllers
         // Adicionar produto (apenas Admin)
         [HttpPost]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddProduto([FromBody] ProdutoDTO produto)
+        public async Task<IActionResult> AddProduto([FromBody] ProdutosRequestDTO produto)
         {
             var newProduto = await _produtoService.CreateAsync(produto);
             return CreatedAtAction(nameof(GetProdutos), new { id = newProduto.Id }, newProduto);

@@ -53,6 +53,7 @@ builder.Services.AddScoped<ItensPedidoService>();
 builder.Services.AddScoped<PedidoService>();
 builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<PagamentoService>();
+builder.Services.AddScoped<InformacaoNutricionalService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -96,6 +97,7 @@ app.UseAuthorization();
 
 // Habilitar Swagger em todos os ambientes
 app.UseSwagger();
+app.UseSwaggerUI();
 app.UseSwaggerUI(c =>
 {
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "GreenRoofApi V1");

@@ -44,7 +44,7 @@ namespace GreenRoofApi.Services
             };
         }
 
-        public async Task CreateAsync(FornecedorDTO fornecedorDTO)
+        public async Task CreateAsync(FornecedorRequestDTO fornecedorDTO)
         {
             var fornecedor = new Fornecedor
             {

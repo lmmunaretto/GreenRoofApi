@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using GreenRoofApi.DTOs;
+﻿using GreenRoofApi.DTOs;
 using GreenRoofApi.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GreenRoofApi.Controllers
 {

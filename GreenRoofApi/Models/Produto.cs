@@ -1,5 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GreenRoofApi.Models
 {
@@ -27,9 +27,10 @@ namespace GreenRoofApi.Models
         public string Tipo { get; set; }
 
         [ForeignKey("Fornecedor")]
-        public int? FornecedorId { get; set; }
+        public int FornecedorId { get; set; }
         public Fornecedor Fornecedor { get; set; }
 
         public virtual ICollection<ItemPedido> ItemPedido { get; set; }
+        public virtual ICollection<InformacaoNutricional> InformacoesNutricionais { get; set; }
     }
 }

@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using GreenRoofApi.Models;
+﻿using GreenRoofApi.DTOs;
 using GreenRoofApi.Services;
-using GreenRoofApi.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GreenRoofApi.Controllers
 {
@@ -20,7 +19,7 @@ namespace GreenRoofApi.Controllers
         // Criar pedido (Cliente)
         [HttpPost]
         [Authorize(Roles = "Cliente")]
-        public async Task<IActionResult> CreatePedido([FromBody] PedidoDTO pedido)
+        public async Task<IActionResult> CreatePedido([FromBody] PedidosRequestDTO pedido)
         {
             var newPedido = await _pedidoService.CreateAsync(pedido);
             return CreatedAtAction(nameof(GetPedido), new { id = newPedido.Id }, newPedido);
@@ -31,16 +30,24 @@ namespace GreenRoofApi.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateStatus(int id, [FromBody] string status)
         {
-            var updatedPedido = await _pedidoService.UpdateStatusAsync(id,status);
+            var updatedPedido = await _pedidoService.UpdateStatusAsync(id, status);
             if (updatedPedido == null) return NotFound();
             return Ok(updatedPedido);
         }
 
         // Listar pedidos
-        [HttpGet]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetPedido(int id)
         {
             var pedido = await _pedidoService.GetByIdAsync(id);
+            if (pedido == null) return NotFound();
+            return Ok(pedido);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPedidos()
+        {
+            var pedido = await _pedidoService.GetAllAsync();
             if (pedido == null) return NotFound();
             return Ok(pedido);
         }

@@ -34,7 +34,7 @@ namespace GreenRoofApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] FornecedorDTO fornecedorDTO)
+        public async Task<ActionResult> Create([FromBody] FornecedorRequestDTO fornecedorDTO)
         {
             await _fornecedorService.CreateAsync(fornecedorDTO);
             return Ok();

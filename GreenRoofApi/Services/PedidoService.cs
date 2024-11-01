@@ -8,16 +8,20 @@ namespace GreenRoofApi.Services
     public class PedidoService
     {
         private readonly GreenRoofContext _context;
+        private readonly ItensPedidoService _itensPedidoService;
+        private readonly ProdutoService _produtoService;
 
-        public PedidoService(GreenRoofContext context)
+        public PedidoService(GreenRoofContext context, ItensPedidoService itensPedidoService, ProdutoService produtoService)
         {
             _context = context;
+            _itensPedidoService = itensPedidoService;
+            _produtoService = produtoService;
         }
 
         public async Task<List<PedidoDTO>> GetAllAsync()
         {
             var pedidos = await _context.Pedidos.ToListAsync();
-            return pedidos.Select(p => new PedidoDTO
+            var pedidosList = pedidos.Select(p => new PedidoDTO
             {
                 Id = p.Id,
                 ClienteId = p.ClienteId,
@@ -25,6 +29,22 @@ namespace GreenRoofApi.Services
                 Total = p.Total,
                 Status = p.Status
             }).ToList();
+
+            foreach (var p in pedidosList)
+            {
+                var itens = await _itensPedidoService.GetAllAsync();
+                var itensPedido = itens.FindAll(x => x.PedidoId == p.Id);
+
+                foreach (var item in itensPedido)
+                {
+                    var produtos = await _produtoService.GetByIdAsync(item.ProdutoId);
+                    item.Produto = produtos;
+                }
+
+                p.ItensPedido = itensPedido;
+            }
+
+            return pedidosList;
         }
 
         public async Task<PedidoDTO> GetByIdAsync(int id)
@@ -42,7 +62,7 @@ namespace GreenRoofApi.Services
             };
         }
 
-        public async Task<Pedido> CreateAsync(PedidoDTO pedidoDTO)
+        public async Task<Pedido> CreateAsync(PedidosRequestDTO pedidoDTO)
         {
             var pedido = new Pedido
             {

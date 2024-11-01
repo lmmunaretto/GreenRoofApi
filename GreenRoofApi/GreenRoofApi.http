@@ -1,6 +1,0 @@
-@GreenRoofApi_HostAddress = http://localhost:5072
-
-GET {{GreenRoofApi_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###

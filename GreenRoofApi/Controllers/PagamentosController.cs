@@ -34,7 +34,7 @@ namespace GreenRoofApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] PagamentoDTO pagamentoDTO)
+        public async Task<ActionResult> Create([FromBody] PagamentosRequestDTO pagamentoDTO)
         {
             await _pagamentoService.CreateAsync(pagamentoDTO);
             return Ok();

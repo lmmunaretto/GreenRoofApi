@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using GreenRoofApi.DTOs;
+﻿using GreenRoofApi.DTOs;
 using GreenRoofApi.Services;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GreenRoofAPI.Controllers
 {
@@ -34,7 +34,7 @@ namespace GreenRoofAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create([FromBody] ClienteDTO clienteDTO)
+        public async Task<ActionResult> Create([FromBody] ClienteRequestDTO clienteDTO)
         {
             await _clienteService.CreateAsync(clienteDTO);
             return Ok();

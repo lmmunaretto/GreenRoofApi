@@ -15,6 +15,7 @@ namespace GreenRoofApi.Data
         public DbSet<ItemPedido> ItensPedidos { get; set; }
         public DbSet<Pagamento> Pagamentos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<InformacaoNutricional> InformacoesNutricionais { get; set; }
 
         // Configurações adicionais
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -128,6 +129,23 @@ namespace GreenRoofApi.Data
                 entity.Property(u => u.Email).HasColumnName("email").IsRequired().HasMaxLength(100);
                 entity.Property(u => u.Senha).HasColumnName("senha").IsRequired().HasMaxLength(255);
                 entity.Property(u => u.Role).HasColumnName("role").IsRequired().HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<InformacaoNutricional>(entity =>
+            {
+                entity.ToTable("informacoes_nutricionais");
+                entity.HasKey(inf => inf.Id);
+                entity.Property(inf => inf.Id).HasColumnName("id");
+                entity.Property(inf => inf.NomeProduto).HasColumnName("nome_produto").IsRequired().HasMaxLength(100);
+                entity.Property(inf => inf.Calorias).HasColumnName("calorias").IsRequired().HasColumnType("numeric(10,2)");
+                entity.Property(inf => inf.Proteinas).HasColumnName("proteinas").IsRequired().HasColumnType("numeric(10,2)");
+                entity.Property(inf => inf.Carboidratos).HasColumnName("carboidratos").IsRequired().HasColumnType("numeric(10,2)");
+                entity.Property(inf => inf.GordurasTotais).HasColumnName("gorduras_totais").IsRequired().HasColumnType("numeric(10,2)");
+                entity.Property(inf => inf.ProdutoId).HasColumnName("produto_id");
+                entity.HasOne(inf => inf.Produto)
+                      .WithMany(p => p.InformacoesNutricionais)
+                      .HasForeignKey(inf => inf.ProdutoId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
         }
     }

@@ -1,7 +1,4 @@
-﻿using GreenRoofApi.Data;
-using GreenRoofApi.DTOs;
-using GreenRoofApi.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using GreenRoofApi.DTOs;
 
 namespace GreenRoofApi.Services
 {
