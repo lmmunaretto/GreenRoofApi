@@ -9,9 +9,6 @@ namespace GreenRoofApi.Models
         public int Id { get; set; }
 
         [Required]
-        public string NomeProduto { get; set; }
-
-        [Required]
         public decimal Calorias { get; set; }
 
         [Required]
@@ -21,7 +18,10 @@ namespace GreenRoofApi.Models
         public decimal Carboidratos { get; set; }
 
         [Required]
-        public decimal GordurasTotais { get; set; }
+        public decimal Fibras { get; set; }
+
+        [Required]
+        public decimal Gorduras { get; set; }
 
         [ForeignKey("Produto")]
         public int ProdutoId { get; set; }

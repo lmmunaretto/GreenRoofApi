@@ -21,11 +21,11 @@ namespace GreenRoofApi.Services
             return informacoes.Select(inf => new InformacaoNutricionalDTO
             {
                 Id = inf.Id,
-                NomeProduto = inf.NomeProduto,
+                Fibras = inf.Fibras,
                 Calorias = inf.Calorias,
                 Proteinas = inf.Proteinas,
                 Carboidratos = inf.Carboidratos,
-                GordurasTotais = inf.GordurasTotais,
+                Gorduras = inf.Gorduras,
                 ProdutoId = inf.ProdutoId
             }).ToList();
         }
@@ -38,11 +38,11 @@ namespace GreenRoofApi.Services
             return new InformacaoNutricionalDTO
             {
                 Id = informacao.Id,
-                NomeProduto = informacao.NomeProduto,
+                Fibras = informacao.Fibras,
                 Calorias = informacao.Calorias,
                 Proteinas = informacao.Proteinas,
                 Carboidratos = informacao.Carboidratos,
-                GordurasTotais = informacao.GordurasTotais,
+                Gorduras = informacao.Gorduras,
                 ProdutoId = informacao.ProdutoId
             };
         }
@@ -51,11 +51,11 @@ namespace GreenRoofApi.Services
         {
             var informacao = new InformacaoNutricional
             {
-                NomeProduto = informacaoDTO.NomeProduto,
+                Fibras = informacaoDTO.Fibras,
                 Calorias = informacaoDTO.Calorias,
                 Proteinas = informacaoDTO.Proteinas,
                 Carboidratos = informacaoDTO.Carboidratos,
-                GordurasTotais = informacaoDTO.GordurasTotais,
+                Gorduras = informacaoDTO.Gorduras,
                 ProdutoId = informacaoDTO.ProdutoId
             };
 
@@ -73,11 +73,11 @@ namespace GreenRoofApi.Services
                 return null;
             }
 
-            informacao.NomeProduto = informacaoDTO.NomeProduto;
+            informacao.Fibras = informacaoDTO.Fibras;
             informacao.Calorias = informacaoDTO.Calorias;
             informacao.Proteinas = informacaoDTO.Proteinas;
             informacao.Carboidratos = informacaoDTO.Carboidratos;
-            informacao.GordurasTotais = informacaoDTO.GordurasTotais;
+            informacao.Gorduras = informacaoDTO.Gorduras;
             informacao.ProdutoId = informacaoDTO.ProdutoId;
 
             _context.InformacoesNutricionais.Update(informacao);
