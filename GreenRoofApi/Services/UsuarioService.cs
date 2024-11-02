@@ -87,7 +87,15 @@ namespace GreenRoofApi.Services
             string senha = usuarioLogin.Senha;
 
             var usuario = await _context.Usuarios.SingleOrDefaultAsync(u => u.Email == email && u.Senha == senha);
-            if (usuario == null) return null;
+            if (usuario == null)
+            {
+                return new UsuarioResultDTO
+                {
+                    Succeeded = false,
+                    Errors = new[] { "Usuário ou senha inválidos." }
+
+                };
+            }
 
             var token = await _tokenService.GenerateTokenAsync(usuario);
 
@@ -107,7 +115,7 @@ namespace GreenRoofApi.Services
                 return new UsuarioResultDTO
                 {
                     Succeeded = false,
-                    Errors = new[] { "Email já está em uso." }
+                    Errors = new[] { "E-mail já está em uso." }
 
                 };
             }

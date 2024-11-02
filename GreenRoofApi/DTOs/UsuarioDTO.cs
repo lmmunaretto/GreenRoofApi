@@ -1,4 +1,6 @@
-﻿namespace GreenRoofApi.DTOs
+﻿using System.Text.Json.Serialization;
+
+namespace GreenRoofApi.DTOs
 {
     public class UsuarioDTO
     {
@@ -27,10 +29,15 @@
     {
         public bool Succeeded { get; set; }
         public string Token { get; set; }
+        [JsonIgnore]
         public int Id { get; set; }
+        [JsonIgnore]
         public string Nome { get; set; }
+        [JsonIgnore]
         public string Email { get; set; }
+        [JsonIgnore]
         public string Role { get; set; }
-        public IEnumerable<string> Errors { get; set; }
+        [JsonIgnore]
+        public IEnumerable<string>? Errors { get; set; }
     }
 }

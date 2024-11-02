@@ -19,25 +19,26 @@ namespace GreenRoofApi.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UsuarioRegisterDTO usuarioDTO)
         {
-            var result = await _usuarioService.RegisterAsync(usuarioDTO);
-            if (!result.Succeeded)
+            var usuarioCriado = await _usuarioService.RegisterAsync(usuarioDTO);
+            if (!usuarioCriado.Succeeded)
             {
-                return BadRequest(result.Errors);
+                return BadRequest(usuarioCriado.Errors);
             }
 
-            return Ok(new { result.Token });
+            return Ok(new { usuarioCriado.Token });
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] UsuarioLoginDTO loginDTO)
         {
-            var token = await _usuarioService.AuthenticateAsync(loginDTO);
-            if (token == null)
+            var usuarioAutenticado = await _usuarioService.AuthenticateAsync(loginDTO);
+
+            if (!usuarioAutenticado.Succeeded)
             {
-                return Unauthorized("Usuário ou senha inválidos.");
+                return Unauthorized(usuarioAutenticado.Errors);
             }
 
-            return Ok(new { token });
+            return Ok(usuarioAutenticado);
         }
 
         [HttpGet]

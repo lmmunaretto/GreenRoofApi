@@ -16,19 +16,18 @@ public class TokenService
     public async Task<string> GenerateTokenAsync(Usuario usuario)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var tokenDescriptor = new SecurityTokenDescriptor();
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         usuario.Role = char.ToUpper(usuario.Role[0]) + usuario.Role.Substring(1).ToLower();
 
         var claims = new[]
         {
-            new Claim(JwtRegisteredClaimNames.Sub, usuario.Nome),
-            new Claim(JwtRegisteredClaimNames.Email, usuario.Email),
-            new Claim(ClaimTypes.Role, usuario.Role)
-        };
-
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        new Claim(JwtRegisteredClaimNames.Sub, usuario.Nome),
+        new Claim(JwtRegisteredClaimNames.Email, usuario.Email),
+        new Claim("role", usuario.Role),
+        new Claim("usuarioId", usuario.Id.ToString())
+    };
 
         var token = new JwtSecurityToken(
             _config["Jwt:Issuer"],
@@ -38,7 +37,7 @@ public class TokenService
             signingCredentials: creds
         );
 
-        return await Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));
+        return await Task.FromResult(tokenHandler.WriteToken(token));
     }
 
 
