@@ -78,10 +78,13 @@ namespace GreenRoofApi.Services
             return pedido;
         }
 
-        public async Task UpdateAsync(int id, PedidoDTO pedidoDTO)
+        public async Task<Pedido> UpdateAsync(int id, PedidosRequestDTO pedidoDTO)
         {
             var pedido = await _context.Pedidos.FindAsync(id);
-            if (pedido == null) return;
+            if (pedido == null)
+            {
+                return null;
+            }
 
             pedido.ClienteId = pedidoDTO.ClienteId;
             pedido.DataPedido = pedidoDTO.DataPedido;
@@ -90,6 +93,8 @@ namespace GreenRoofApi.Services
 
             _context.Pedidos.Update(pedido);
             await _context.SaveChangesAsync();
+
+            return pedido;
         }
 
         public async Task<Pedido> UpdateStatusAsync(int id, string status)
