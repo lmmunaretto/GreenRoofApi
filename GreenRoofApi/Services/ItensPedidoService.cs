@@ -42,6 +42,24 @@ namespace GreenRoofApi.Services
             };
         }
 
+        public async Task<List<ItemPedidoDTO>> GetItemPedidoByProdutoId(int pedidoId, int produtoId)
+        {
+            var itemPedidos = await _context.ItensPedidos
+                                            .Where(itemPedido => itemPedido.PedidoId == pedidoId && itemPedido.ProdutoId == produtoId)
+                                            .ToListAsync();
+
+            var result = itemPedidos.Select(itemPedido => new ItemPedidoDTO
+            {
+                Id = itemPedido.Id,
+                PedidoId = itemPedido.PedidoId,
+                ProdutoId = itemPedido.ProdutoId,
+                Quantidade = itemPedido.Quantidade,
+                PrecoUnitario = itemPedido.PrecoUnitario
+            }).ToList();
+
+            return result;
+        }
+
         public async Task CreateAsync(ItensPedidosDTO itemPedidoDTO)
         {
             var itemPedido = new ItemPedido
