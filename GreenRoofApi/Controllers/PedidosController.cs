@@ -18,7 +18,7 @@ namespace GreenRoofApi.Controllers
 
         // Criar pedido (Cliente)
         [HttpPost]
-        [Authorize(Roles = "Cliente")]
+        [Authorize(Roles = "Admin, Cliente")]
         public async Task<IActionResult> CreatePedido([FromBody] PedidosRequestDTO pedido)
         {
             var newPedido = await _pedidoService.CreateAsync(pedido);
