@@ -35,7 +35,7 @@ namespace GreenRoofApi.Controllers
             return Ok(updatedPedido);
         }
 
-        // Atualizar status de pedido (Admin)
+        // Atualizar o pedido
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdatePedido(int id, [FromBody] PedidosRequestDTO pedido)
         {
