@@ -33,6 +33,17 @@ namespace GreenRoofApi.Controllers
             return Ok(itemPedido);
         }
 
+        [HttpGet]
+        public async Task<ActionResult<ItemPedidoDTO>> GetItemPedidoByProdutoId([FromQuery] int pedidoId, [FromQuery] int produtoId)
+        {
+            var itemPedido = await _itensPedidoService.GetItemPedidoByProdutoId(pedidoId, produtoId);
+            if (itemPedido == null)
+            {
+                return NotFound();
+            }
+            return Ok(itemPedido);
+        }
+
         [HttpPost]
         public async Task<ActionResult> Create([FromBody] ItensPedidosDTO itemPedidoDTO)
         {
