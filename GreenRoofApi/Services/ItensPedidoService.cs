@@ -79,8 +79,6 @@ namespace GreenRoofApi.Services
             var itemPedido = await _context.ItensPedidos.FindAsync(id);
             if (itemPedido == null) return;
 
-            itemPedido.PedidoId = itemPedidoDTO.PedidoId;
-            itemPedido.ProdutoId = itemPedidoDTO.ProdutoId;
             itemPedido.Quantidade = itemPedidoDTO.Quantidade;
             itemPedido.PrecoUnitario = itemPedidoDTO.PrecoUnitario;
 
