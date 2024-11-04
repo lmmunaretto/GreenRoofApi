@@ -52,13 +52,23 @@ namespace GreenRoofApi.Services
             var pedido = await _context.Pedidos.FindAsync(id);
             if (pedido == null) return null;
 
+            var itens = await _itensPedidoService.GetAllAsync();
+            var itensPedido = itens.FindAll(x => x.PedidoId == pedido.Id).ToList();
+
+            foreach (var item in itensPedido)
+            {
+                var produtos = await _produtoService.GetByIdAsync(item.ProdutoId);
+                item.Produto = produtos;
+            }
+
             return new PedidoDTO
             {
                 Id = pedido.Id,
                 ClienteId = pedido.ClienteId,
                 DataPedido = pedido.DataPedido,
                 Total = pedido.Total,
-                Status = pedido.Status
+                Status = pedido.Status,
+                ItensPedido = itensPedido
             };
         }
 
