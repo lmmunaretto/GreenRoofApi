@@ -47,6 +47,23 @@ namespace GreenRoofApi.Services
             };
         }
 
+        public async Task<InformacaoNutricionalDTO> GetByProdutoIdAsync(int produtoId)
+        {
+            var informacao = await _context.InformacoesNutricionais.Where(x => x.ProdutoId == produtoId).FirstOrDefaultAsync();
+            if (informacao == null) return null;
+
+            return new InformacaoNutricionalDTO
+            {
+                Id = informacao.Id,
+                Fibras = informacao.Fibras,
+                Calorias = informacao.Calorias,
+                Proteinas = informacao.Proteinas,
+                Carboidratos = informacao.Carboidratos,
+                Gorduras = informacao.Gorduras,
+                ProdutoId = informacao.ProdutoId
+            };
+        }
+
         public async Task<InformacaoNutricional> CreateAsync(InformacaoNutricionalRequestDTO informacaoDTO)
         {
             var informacao = new InformacaoNutricional

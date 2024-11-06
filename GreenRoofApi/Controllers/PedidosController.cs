@@ -16,23 +16,16 @@ namespace GreenRoofApi.Controllers
             _pedidoService = pedidoService;
         }
 
-        // Criar pedido (Cliente)
-        [HttpPost]
-        [Authorize(Roles = "Admin, Cliente")]
-        public async Task<IActionResult> CreatePedido([FromBody] PedidosRequestDTO pedido)
-        {
-            var newPedido = await _pedidoService.CreateAsync(pedido);
-            return CreatedAtAction(nameof(GetPedido), new { id = newPedido.Id }, newPedido);
-        }
-
         // Atualizar status de pedido (Admin)
         [HttpPut("{id}/status")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> UpdateStatus(int id, [FromBody] string status)
+        public async Task<IActionResult> UpdateStatus(int id, [FromBody] string novoStatus)
         {
-            var updatedPedido = await _pedidoService.UpdateStatusAsync(id, status);
-            if (updatedPedido == null) return NotFound();
-            return Ok(updatedPedido);
+            var resultado = await _pedidoService.UpdateStatusAsync(id, novoStatus);
+
+            if (!resultado)
+                return NotFound("Pedido não encontrado.");
+
+            return NoContent();
         }
 
         // Atualizar o pedido
@@ -56,9 +49,29 @@ namespace GreenRoofApi.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPedidos()
         {
-            var pedido = await _pedidoService.GetAllAsync();
-            if (pedido == null) return NotFound();
-            return Ok(pedido);
+            var pedidos = await _pedidoService.GetAllAsync();
+            return Ok(pedidos.Select(p => new
+            {
+                p.Id,
+                ClienteNome = p.Cliente.Nome,
+                p.DataPedido,
+                p.TotalPedido,
+                p.Status,
+                Itens = p.ItemPedido.Select(i => new
+                {
+                    i.Produto.Nome,
+                    i.Quantidade,
+                    i.PrecoUnitario
+                }).ToList()
+            }));
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin, Cliente")]
+        public async Task<IActionResult> CreatePedido([FromBody] PedidosRequestDTO pedido)
+        {
+            var newPedido = await _pedidoService.CreateAsync(pedido);
+            return CreatedAtAction(nameof(GetPedido), new { id = newPedido.Id }, newPedido);
         }
     }
 }

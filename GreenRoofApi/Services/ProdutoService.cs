@@ -9,11 +9,13 @@ namespace GreenRoofApi.Services
     {
         private readonly GreenRoofContext _context;
         private readonly FornecedorService _fornecedorService;
+        private readonly InformacaoNutricionalService _infoNutriService;
 
-        public ProdutoService(GreenRoofContext context, FornecedorService fornecedorService)
+        public ProdutoService(GreenRoofContext context, FornecedorService fornecedorService, InformacaoNutricionalService infoNutriService)
         {
             _context = context;
             _fornecedorService = fornecedorService;
+            _infoNutriService = infoNutriService;
         }
 
         public async Task<List<ProdutoDTO>> GetAllAsync()
@@ -33,7 +35,9 @@ namespace GreenRoofApi.Services
             foreach (var item in produtosList)
             {
                 var fornecedor = await _fornecedorService.GetByIdAsync(item.FornecedorId);
+                var infoNutri = await _infoNutriService.GetByProdutoIdAsync(item.Id);
                 item.Fornecedor = fornecedor;
+                item.InformacoesNutricionais = infoNutri;
             }
 
             return produtosList;
@@ -45,6 +49,7 @@ namespace GreenRoofApi.Services
             if (produto == null) return null;
 
             var fornecedor = await _fornecedorService.GetByIdAsync(produto.FornecedorId);
+            var infoNutri = await _infoNutriService.GetByProdutoIdAsync(produto.Id);
 
             return new ProdutoDTO
             {
@@ -56,6 +61,7 @@ namespace GreenRoofApi.Services
                 Tipo = produto.Tipo,
                 FornecedorId = produto.FornecedorId,
                 Fornecedor = fornecedor,
+                InformacoesNutricionais = infoNutri,
             };
         }
 
@@ -68,18 +74,27 @@ namespace GreenRoofApi.Services
                 Quantidade = produtoDTO.Quantidade,
                 Preco = produtoDTO.Preco,
                 Tipo = produtoDTO.Tipo,
-                FornecedorId = produtoDTO.FornecedorId
+                FornecedorId = produtoDTO.FornecedorId,
+                LimiteMinimoEstoque = produtoDTO.LimiteMinimoEstoque,
             };
 
             _context.Produtos.Add(produto);
             await _context.SaveChangesAsync();
 
+            if (produto.Quantidade <= produto.LimiteMinimoEstoque)
+            {
+                EnviarAlertaEstoqueBaixo(produto);
+            }
             return produto;
         }
-
-        public async Task<Produto> UpdateAsync(int id, ProdutoDTO produtoDTO)
+        public void EnviarAlertaEstoqueBaixo(Produto produto)
         {
-            var produto = await _context.Produtos.FindAsync(id);
+            Console.WriteLine($"Alerta: Estoque baixo para o produto '{produto.Nome}'");
+        }
+
+        public async Task<Produto> UpdateAsync(ProdutoDTO produtoDTO)
+        {
+            var produto = await _context.Produtos.FindAsync(produtoDTO.Id);
             if (produto == null)
             {
                 return null;
@@ -94,6 +109,11 @@ namespace GreenRoofApi.Services
 
             _context.Produtos.Update(produto);
             await _context.SaveChangesAsync();
+
+            if (produto.Quantidade <= produto.LimiteMinimoEstoque)
+            {
+                EnviarAlertaEstoqueBaixo(produto);
+            }
 
             return produto;
         }

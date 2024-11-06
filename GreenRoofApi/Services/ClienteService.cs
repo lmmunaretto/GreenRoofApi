@@ -24,7 +24,8 @@ namespace GreenRoofApi.Services
                 Email = c.Email,
                 Telefone = c.Telefone,
                 Cpf = c.Cpf,
-                Endereco = c.Endereco
+                Endereco = c.Endereco,
+                AdminId = c.AdminId,
             }).ToList();
         }
 
@@ -40,11 +41,12 @@ namespace GreenRoofApi.Services
                 Email = cliente.Email,
                 Telefone = cliente.Telefone,
                 Cpf = cliente.Cpf,
-                Endereco = cliente.Endereco
+                Endereco = cliente.Endereco,
+                AdminId = cliente.AdminId,
             };
         }
 
-        public async Task CreateAsync(ClienteRequestDTO clienteDTO)
+        public async Task<Cliente> CreateAsync(ClienteRequestDTO clienteDTO)
         {
             var cliente = new Cliente
             {
@@ -52,11 +54,14 @@ namespace GreenRoofApi.Services
                 Email = clienteDTO.Email,
                 Telefone = clienteDTO.Telefone,
                 Cpf = clienteDTO.Cpf,
-                Endereco = clienteDTO.Endereco
+                Endereco = clienteDTO.Endereco,
+                AdminId= clienteDTO.AdminId,
             };
 
             _context.Clientes.Add(cliente);
             await _context.SaveChangesAsync();
+
+            return cliente;
         }
 
         public async Task UpdateAsync(int id, ClienteDTO clienteDTO)

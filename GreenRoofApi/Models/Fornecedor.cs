@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GreenRoofApi.DTOs;
+using System.ComponentModel.DataAnnotations;
 
 namespace GreenRoofApi.Models
 {
@@ -28,6 +29,14 @@ namespace GreenRoofApi.Models
         public string Endereco { get; set; }
 
         // Adicione esta propriedade para representar o relacionamento com produtos
+
+        public int AdminId { get; set; }
+        public Usuario Admin { get; set; }
         public virtual ICollection<Produto> Produtos { get; set; }
+
+        public static explicit operator Fornecedor(FornecedorDTO v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

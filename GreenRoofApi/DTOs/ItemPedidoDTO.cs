@@ -12,6 +12,7 @@ namespace GreenRoofApi.DTOs
         public ProdutoDTO? Produto { get; set; }
         public int Quantidade { get; set; }
         public decimal PrecoUnitario { get; set; }
+        public decimal Preco { get; set; }
     }
 
     public class ItensPedidosDTO

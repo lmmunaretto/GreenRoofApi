@@ -28,6 +28,9 @@ namespace GreenRoofApi.Models
         [StringLength(255)]
         public string Endereco { get; set; }
 
+        public int AdminId { get; set; }
+        public Usuario Admin { get; set; }
+
         public virtual ICollection<Pedido> Pedidos { get; set; }
 
     }

@@ -24,7 +24,8 @@ namespace GreenRoofApi.Services
                 Telefone = f.Telefone,
                 Email = f.Email,
                 Cnpj = f.Cnpj,
-                Endereco = f.Endereco
+                Endereco = f.Endereco,
+                AdminId = f.AdminId,
             }).ToList();
         }
 
@@ -40,11 +41,12 @@ namespace GreenRoofApi.Services
                 Telefone = fornecedor.Telefone,
                 Email = fornecedor.Email,
                 Cnpj = fornecedor.Cnpj,
-                Endereco = fornecedor.Endereco
+                Endereco = fornecedor.Endereco,
+                AdminId = fornecedor.AdminId,
             };
         }
 
-        public async Task CreateAsync(FornecedorRequestDTO fornecedorDTO)
+        public async Task<Fornecedor> CreateAsync(FornecedorRequestDTO fornecedorDTO)
         {
             var fornecedor = new Fornecedor
             {
@@ -52,11 +54,14 @@ namespace GreenRoofApi.Services
                 Telefone = fornecedorDTO.Telefone,
                 Email = fornecedorDTO.Email,
                 Cnpj = fornecedorDTO.Cnpj,
-                Endereco = fornecedorDTO.Endereco
+                Endereco = fornecedorDTO.Endereco,
+                AdminId = fornecedorDTO.AdminId
             };
 
             _context.Fornecedores.Add(fornecedor);
             await _context.SaveChangesAsync();
+
+            return fornecedor;
         }
 
         public async Task UpdateAsync(int id, FornecedorDTO fornecedorDTO)

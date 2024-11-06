@@ -9,6 +9,7 @@ namespace GreenRoofApi.DTOs
         public string Email { get; set; }
         public string Role { get; set; }
         public string Senha { get; internal set; }
+        public bool DeveTrocarSenha { get; set; }
     }
 
     public class UsuarioLoginDTO
@@ -39,5 +40,12 @@ namespace GreenRoofApi.DTOs
         public string Role { get; set; }
         [JsonIgnore]
         public IEnumerable<string>? Errors { get; set; }
+    }
+
+    public class TrocaSenhaRequest
+    {
+        public string Email { get; set; }
+        public string SenhaAtual { get; set; }
+        public string NovaSenha { get; set; }
     }
 }

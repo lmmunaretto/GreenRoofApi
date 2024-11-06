@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using GreenRoofApi.DTOs;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GreenRoofApi.Models
@@ -10,6 +11,8 @@ namespace GreenRoofApi.Models
         [Required]
         [StringLength(100)]
         public string Nome { get; set; }
+
+        public int LimiteMinimoEstoque { get; set; }
 
         [StringLength(255)]
         public string Descricao { get; set; }
@@ -31,6 +34,7 @@ namespace GreenRoofApi.Models
         public Fornecedor Fornecedor { get; set; }
 
         public virtual ICollection<ItemPedido> ItemPedido { get; set; }
-        public virtual ICollection<InformacaoNutricional> InformacoesNutricionais { get; set; }
+        public virtual InformacaoNutricional InformacoesNutricionais { get; set; }
+
     }
 }

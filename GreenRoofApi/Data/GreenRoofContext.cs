@@ -33,6 +33,7 @@ namespace GreenRoofApi.Data
                 entity.Property(c => c.Telefone).HasColumnName("telefone").IsRequired().HasMaxLength(15);
                 entity.Property(c => c.Cpf).HasColumnName("cpf").IsRequired().HasMaxLength(11).IsFixedLength();
                 entity.Property(c => c.Endereco).HasColumnName("endereco").IsRequired().HasMaxLength(255);
+                entity.Property(c => c.AdminId).HasColumnName("admin_id");
             });
 
             // Configurações para a tabela Fornecedores
@@ -46,6 +47,7 @@ namespace GreenRoofApi.Data
                 entity.Property(f => f.Email).HasColumnName("email").HasMaxLength(100);
                 entity.Property(f => f.Cnpj).HasColumnName("cnpj").IsRequired().HasMaxLength(14).IsFixedLength();
                 entity.Property(f => f.Endereco).HasColumnName("endereco").IsRequired().HasMaxLength(255);
+                entity.Property(c => c.AdminId).HasColumnName("admin_id");
             });
 
             // Configurações para a tabela Produtos
@@ -59,6 +61,7 @@ namespace GreenRoofApi.Data
                 entity.Property(p => p.Quantidade).HasColumnName("quantidade").IsRequired().HasDefaultValue(0);
                 entity.Property(p => p.Preco).HasColumnName("preco").IsRequired().HasColumnType("numeric(10,2)");
                 entity.Property(p => p.Tipo).HasColumnName("tipo").IsRequired().HasMaxLength(50);
+                entity.Property(p => p.LimiteMinimoEstoque).HasColumnName("limite_min_etq");
                 entity.Property(p => p.FornecedorId).HasColumnName("fornecedor_id");
                 entity.HasOne(p => p.Fornecedor)
                       .WithMany(f => f.Produtos)
@@ -74,12 +77,15 @@ namespace GreenRoofApi.Data
                 entity.Property(p => p.Id).HasColumnName("id");
                 entity.Property(p => p.ClienteId).HasColumnName("cliente_id");
                 entity.Property(p => p.DataPedido).HasColumnName("data_pedido").IsRequired().HasDefaultValueSql("CURRENT_DATE");
-                entity.Property(p => p.Total).HasColumnName("total").IsRequired().HasColumnType("numeric(10,2)");
+                entity.Property(p => p.TotalPedido).HasColumnName("total").IsRequired().HasColumnType("numeric(10,2)");
                 entity.Property(p => p.Status).HasColumnName("status").IsRequired().HasMaxLength(50).HasDefaultValue("Em Processamento");
                 entity.HasOne(p => p.Cliente)
                       .WithMany(c => c.Pedidos)
                       .HasForeignKey(p => p.ClienteId)
                       .OnDelete(DeleteBehavior.Cascade);
+                entity.HasMany(p => p.ItemPedido)
+                      .WithOne(i => i.Pedido)
+                      .HasForeignKey(i => i.PedidoId);
             });
 
             // Configurações para a tabela ItensPedido
@@ -129,6 +135,13 @@ namespace GreenRoofApi.Data
                 entity.Property(u => u.Email).HasColumnName("email").IsRequired().HasMaxLength(100);
                 entity.Property(u => u.Senha).HasColumnName("senha").IsRequired().HasMaxLength(255);
                 entity.Property(u => u.Role).HasColumnName("role").IsRequired().HasMaxLength(50);
+                entity.Property(u => u.DeveTrocarSenha).HasColumnName("deve_trocar_senha");
+                entity.HasMany(u => u.Clientes)
+                      .WithOne(c => c.Admin)
+                      .HasForeignKey(c => c.AdminId);
+                entity.HasMany(u => u.Fornecedores)
+                      .WithOne(f => f.Admin)
+                      .HasForeignKey(f => f.AdminId);
             });
 
             modelBuilder.Entity<InformacaoNutricional>(entity =>
@@ -142,11 +155,9 @@ namespace GreenRoofApi.Data
                 entity.Property(inf => inf.Carboidratos).HasColumnName("carboidratos").IsRequired().HasColumnType("numeric(10,2)");
                 entity.Property(inf => inf.Gorduras).HasColumnName("gorduras").IsRequired().HasColumnType("numeric(10,2)");
                 entity.Property(inf => inf.ProdutoId).HasColumnName("produto_id");
-                entity.HasOne(inf => inf.Produto)
-                      .WithMany(p => p.InformacoesNutricionais)
-                      .HasForeignKey(inf => inf.ProdutoId)
-                      .OnDelete(DeleteBehavior.Cascade);
             });
+
+
         }
     }
 }

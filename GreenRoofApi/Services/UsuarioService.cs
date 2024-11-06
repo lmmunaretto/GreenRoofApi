@@ -51,22 +51,24 @@ namespace GreenRoofApi.Services
                 Nome = usuarioDTO.Nome,
                 Email = usuarioDTO.Email,
                 Senha = usuarioDTO.Senha,
-                Role = usuarioDTO.Role
+                Role = usuarioDTO.Role, 
+                DeveTrocarSenha = usuarioDTO.Role == "Admin" ? false : true
             };
 
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(int id, UsuarioDTO usuarioDTO)
+        public async Task UpdateAsync(UsuarioDTO usuarioDTO)
         {
-            var usuario = await _context.Usuarios.FindAsync(id);
+            var usuario = await _context.Usuarios.FindAsync(usuarioDTO.Id);
             if (usuario == null) return;
 
             usuario.Nome = usuarioDTO.Nome;
             usuario.Email = usuarioDTO.Email;
             usuario.Senha = usuarioDTO.Senha;
             usuario.Role = usuarioDTO.Role;
+            usuario.DeveTrocarSenha = usuarioDTO.DeveTrocarSenha;
 
             _context.Usuarios.Update(usuario);
             await _context.SaveChangesAsync();
@@ -93,6 +95,19 @@ namespace GreenRoofApi.Services
                 {
                     Succeeded = false,
                     Errors = new[] { "Usuário ou senha inválidos." }
+
+                };
+            }
+
+            if (usuario.DeveTrocarSenha)
+            {
+                var tokenPrimeiroAcesso = await _tokenService.GenerateTokenAsync(usuario);
+
+                return new UsuarioResultDTO
+                {
+                    Succeeded = true,
+                    Errors = new[] { "Primeiro acesso. Por favor, altere sua senha." },
+                    Token = tokenPrimeiroAcesso,
 
                 };
             }

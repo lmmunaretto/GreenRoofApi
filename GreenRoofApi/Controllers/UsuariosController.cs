@@ -1,7 +1,9 @@
 ﻿using GreenRoofApi.DTOs;
+using GreenRoofApi.Models;
 using GreenRoofApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace GreenRoofApi.Controllers
 {
@@ -47,6 +49,24 @@ namespace GreenRoofApi.Controllers
         {
             var usuarios = await _usuarioService.GetAllAsync();
             return Ok(usuarios);
+        }
+
+        [HttpPost("trocar-senha")]
+        public async Task<IActionResult> TrocarSenha(TrocaSenhaRequest request)
+        {
+            var usuarios = await _usuarioService.GetAllAsync();
+            var usuario = usuarios.Where(x => x.Email == request.Email).FirstOrDefault();
+
+            if (request.SenhaAtual != usuario.Senha)
+            {
+                return BadRequest("Senha atual incorreta.");
+            }
+
+            usuario.Senha = request.NovaSenha;
+            usuario.DeveTrocarSenha = false;
+
+            await _usuarioService.UpdateAsync(usuario);
+            return Ok("Senha trocada com sucesso.");
         }
     }
 }

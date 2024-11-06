@@ -17,14 +17,13 @@ namespace GreenRoofApi.Models
 
         [Required]
         [Column(TypeName = "decimal(10, 2)")]
-        public decimal Total { get; set; }
+        public decimal TotalPedido { get; set; }
 
         [Required]
         [StringLength(50)]
         public string Status { get; set; } = "Em Processamento";
 
-        // Adicione esta propriedade para representar o relacionamento com produtos
         public virtual ICollection<ItemPedido> ItemPedido { get; set; }
-        public virtual ICollection<Pagamento> Pagamento { get; set; }
+        public virtual ICollection<Pagamento>? Pagamento { get; set; }
     }
 }

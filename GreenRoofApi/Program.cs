@@ -54,8 +54,15 @@ builder.Services.AddScoped<PedidoService>();
 builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<PagamentoService>();
 builder.Services.AddScoped<InformacaoNutricionalService>();
+builder.Services.AddHttpClient();
+builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+     {
+         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
+         options.JsonSerializerOptions.WriteIndented = true;
+     });
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -94,6 +101,7 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAll"); // Habilita o CORS
 app.UseAuthentication();
 app.UseAuthorization();
+app.MapControllers();
 
 // Habilitar Swagger em todos os ambientes
 app.UseSwagger();
@@ -103,7 +111,5 @@ app.UseSwaggerUI(c =>
     c.SwaggerEndpoint("/swagger/v1/swagger.json", "GreenRoofApi V1");
     c.RoutePrefix = string.Empty; // Para acessar Swagger na raiz do app
 });
-
-app.MapControllers();
 
 app.Run();

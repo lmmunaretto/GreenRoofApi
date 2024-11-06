@@ -12,7 +12,7 @@ namespace GreenRoofApi.Services
         Task CreateAsync(UsuarioDTO usuarioDTO);
 
 
-        Task UpdateAsync(int id, UsuarioDTO usuarioDTO);
+        Task UpdateAsync(UsuarioDTO usuarioDTO);
 
 
         Task DeleteAsync(int id);

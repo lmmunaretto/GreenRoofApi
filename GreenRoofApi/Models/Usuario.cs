@@ -22,5 +22,10 @@ namespace GreenRoofApi.Models
         [StringLength(50)]
         public string Role { get; set; }
 
+        public  bool DeveTrocarSenha { get; set; }
+
+        public ICollection<Cliente> Clientes { get; set; }
+        public ICollection<Fornecedor> Fornecedores { get; set; }
+
     }
 }
