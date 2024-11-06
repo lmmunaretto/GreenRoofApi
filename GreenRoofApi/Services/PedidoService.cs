@@ -31,7 +31,7 @@ namespace GreenRoofApi.Services
         {
 
             return await _context.Pedidos
-                .Where(p => p.Id == id)
+                .Where(p => p.Id == id && p.Status != "Pago" && p.Status != "Concluído" && p.Status != "Cancelado")
                 .Include(p => p.Cliente)
                 .Include(p => p.ItemPedido)
                     .ThenInclude(i => i.Produto)
