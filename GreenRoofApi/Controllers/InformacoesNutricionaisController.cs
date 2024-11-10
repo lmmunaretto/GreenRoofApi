@@ -30,6 +30,13 @@ namespace GreenRoofApi.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddInformacaoNutricional([FromBody] InformacaoNutricionalRequestDTO informacao)
         {
+            // Verifica e substitui vírgulas por pontos em campos numéricos
+            informacao.Calorias = Convert.ToDecimal(informacao.Calorias.ToString().Replace(',', '.'));
+            informacao.Carboidratos = Convert.ToDecimal(informacao.Carboidratos.ToString().Replace(',', '.'));
+            informacao.Proteinas = Convert.ToDecimal(informacao.Proteinas.ToString().Replace(',', '.'));
+            informacao.Gorduras = Convert.ToDecimal(informacao.Gorduras.ToString().Replace(',', '.'));
+            informacao.Fibras = Convert.ToDecimal(informacao.Fibras.ToString().Replace(',', '.'));
+
             var newInformacao = await _informacaoService.CreateAsync(informacao);
             return CreatedAtAction(nameof(GetInformacoesNutricionais), new { id = newInformacao.Id }, newInformacao);
         }

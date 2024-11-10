@@ -46,6 +46,15 @@ namespace GreenRoofApi.Controllers
             return Ok(pedido);
         }
 
+        // Listar pedidos
+        [HttpGet("all/{id}")]
+        public async Task<IActionResult> GetAllPedido(int id)
+        {
+            var pedido = await _pedidoService.GetAllByIdAsync(id);
+            if (pedido == null) return NotFound();
+            return Ok(pedido);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetPedidos()
         {
@@ -54,6 +63,7 @@ namespace GreenRoofApi.Controllers
             {
                 p.Id,
                 ClienteNome = p.Cliente.Nome,
+                p.ClienteId,
                 p.DataPedido,
                 p.TotalPedido,
                 p.Status,
@@ -65,6 +75,7 @@ namespace GreenRoofApi.Controllers
                 }).ToList()
             }));
         }
+
 
         [HttpPost]
         [Authorize(Roles = "Admin, Cliente")]

@@ -23,6 +23,13 @@ namespace GreenRoofApi.Controllers
             return Ok(produtos);
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetProdutoById(int id)
+        {
+            var produtos = await _produtoService.GetByIdAsync(id);
+            return Ok(produtos);
+        }
+
         // Adicionar produto (apenas Admin)
         [HttpPost]
         [Authorize(Roles = "Admin")]
@@ -32,9 +39,9 @@ namespace GreenRoofApi.Controllers
             return CreatedAtAction(nameof(GetProdutos), new { id = newProduto.Id }, newProduto);
         }
 
-        // Atualizar produto (apenas Admin)
+        // Atualizar produto
         [HttpPut("{id}/estoque")]
-        [Authorize(Roles = "Admin, Funcionario")]
+        [Authorize(Roles = "Admin, Cliente")]
         public async Task<IActionResult> UpdateEstoque(int id, [FromBody] int quantidade)
         {
             var produto = await _produtoService.GetByIdAsync(id);

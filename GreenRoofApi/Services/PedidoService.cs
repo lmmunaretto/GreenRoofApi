@@ -39,6 +39,18 @@ namespace GreenRoofApi.Services
 
         }
 
+        public async Task<Pedido> GetAllByIdAsync(int id)
+        {
+
+            return await _context.Pedidos
+                .Where(p => p.Id == id)
+                .Include(p => p.Cliente)
+                .Include(p => p.ItemPedido)
+                    .ThenInclude(i => i.Produto)
+                .FirstOrDefaultAsync();
+
+        }
+
         public async Task<Pedido> CreateAsync(PedidosRequestDTO pedidoDTO)
         {
             var pedido = new Pedido
