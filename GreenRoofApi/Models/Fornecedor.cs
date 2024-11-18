@@ -28,15 +28,9 @@ namespace GreenRoofApi.Models
         [StringLength(255)]
         public string Endereco { get; set; }
 
-        // Adicione esta propriedade para representar o relacionamento com produtos
-
         public int AdminId { get; set; }
         public Usuario Admin { get; set; }
-        public virtual ICollection<Produto> Produtos { get; set; }
+        public virtual ICollection<ProdutoFornecedor> ProdutosFornecedor { get; set; }
 
-        public static explicit operator Fornecedor(FornecedorDTO v)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

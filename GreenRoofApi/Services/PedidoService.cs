@@ -8,38 +8,66 @@ namespace GreenRoofApi.Services
     public class PedidoService
     {
         private readonly GreenRoofContext _context;
-        private readonly ItensPedidoService _itensPedidoService;
-        private readonly ProdutoService _produtoService;
 
-        public PedidoService(GreenRoofContext context, ItensPedidoService itensPedidoService, ProdutoService produtoService)
+        public PedidoService(GreenRoofContext context)
         {
             _context = context;
-            _itensPedidoService = itensPedidoService;
-            _produtoService = produtoService;
         }
 
-        public async Task<List<Pedido>> GetAllAsync()
+        public async Task<List<PedidoDTO>> GetAllAsync()
         {
             return await _context.Pedidos
                 .Include(p => p.Cliente)
                 .Include(p => p.ItemPedido)
                     .ThenInclude(i => i.Produto)
+                .Select(p => new PedidoDTO
+                {
+                    Id = p.Id,
+                    ClienteId = p.Cliente.Id,
+                    ClienteNome = p.Cliente.Nome,
+                    DataPedido = p.DataPedido,
+                    TotalPedido = p.TotalPedido,
+                    Status = p.Status,
+                    ItemPedido = p.ItemPedido.Select(i => new ItemPedidoDTO
+                    {
+                        ProdutoId = i.Produto.Id,
+                        ProdutoNome = i.Produto.Nome,
+                        Quantidade = i.Quantidade,
+                        PrecoUnitario = i.PrecoUnitario
+                    }).ToList()
+                })
                 .ToListAsync();
         }
 
-        public async Task<Pedido> GetByIdAsync(int id)
+        public async Task<PedidoDTO?> GetByIdAsync(int id)
         {
-
             return await _context.Pedidos
                 .Where(p => p.Id == id && p.Status != "Pago" && p.Status != "Concluído" && p.Status != "Cancelado")
                 .Include(p => p.Cliente)
                 .Include(p => p.ItemPedido)
                     .ThenInclude(i => i.Produto)
+                .Select(p => new PedidoDTO
+                {
+                    Id = p.Id,
+                    ClienteId = p.Cliente.Id,
+                    ClienteNome = p.Cliente.Nome,
+                    DataPedido = p.DataPedido,
+                    TotalPedido = p.TotalPedido,
+                    Status = p.Status,
+                    ItemPedido = p.ItemPedido.Select(i => new ItemPedidoDTO
+                    {
+                        ProdutoId = i.Produto.Id,
+                        ProdutoNome = i.Produto.Nome,
+                        Quantidade = i.Quantidade,
+                        PrecoUnitario = i.PrecoUnitario
+                    }).ToList()
+                })
                 .FirstOrDefaultAsync();
-
         }
 
-        public async Task<Pedido> GetAllByIdAsync(int id)
+
+
+        public async Task<PedidoDTO?> GetAllByIdAsync(int id)
         {
 
             return await _context.Pedidos
@@ -47,8 +75,23 @@ namespace GreenRoofApi.Services
                 .Include(p => p.Cliente)
                 .Include(p => p.ItemPedido)
                     .ThenInclude(i => i.Produto)
+                .Select(p => new PedidoDTO
+                {
+                    Id = p.Id,
+                    ClienteId = p.Cliente.Id,
+                    ClienteNome = p.Cliente.Nome,
+                    DataPedido = p.DataPedido,
+                    TotalPedido = p.TotalPedido,
+                    Status = p.Status,
+                    ItemPedido = p.ItemPedido.Select(i => new ItemPedidoDTO
+                    {
+                        ProdutoId = i.Produto.Id,
+                        ProdutoNome = i.Produto.Nome,
+                        Quantidade = i.Quantidade,
+                        PrecoUnitario = i.PrecoUnitario
+                    }).ToList()
+                })
                 .FirstOrDefaultAsync();
-
         }
 
         public async Task<Pedido> CreateAsync(PedidosRequestDTO pedidoDTO)
@@ -76,10 +119,10 @@ namespace GreenRoofApi.Services
                 {
                     ProdutoId = itemDto.ProdutoId,
                     Quantidade = itemDto.Quantidade,
-                    PrecoUnitario = itemDto.Preco
+                    PrecoUnitario = itemDto.PrecoUnitario
                 };
                 pedido.ItemPedido.Add(itemPedido);
-                pedido.TotalPedido += itemDto.Preco * itemDto.Quantidade;
+                pedido.TotalPedido += itemDto.PrecoUnitario * itemDto.Quantidade;
             }
 
             _context.Pedidos.Add(pedido);

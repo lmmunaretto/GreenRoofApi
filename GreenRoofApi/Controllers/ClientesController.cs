@@ -101,7 +101,7 @@ namespace GreenRoofAPI.Controllers
             return Ok();
         }
 
-        private string GerarSenhaAleatoria()
+        private static string GerarSenhaAleatoria()
         {
             const string caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
             var random = new Random();

@@ -60,7 +60,7 @@ namespace GreenRoofApi.Services
             return result;
         }
 
-        public async Task CreateAsync(ItensPedidosDTO itemPedidoDTO)
+        public async Task CreateAsync(ItensPedidosRequestDTO itemPedidoDTO)
         {
             var itemPedido = new ItemPedido
             {

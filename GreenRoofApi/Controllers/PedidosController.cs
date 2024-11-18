@@ -62,14 +62,14 @@ namespace GreenRoofApi.Controllers
             return Ok(pedidos.Select(p => new
             {
                 p.Id,
-                ClienteNome = p.Cliente.Nome,
+                p.ClienteNome,
                 p.ClienteId,
                 p.DataPedido,
                 p.TotalPedido,
                 p.Status,
                 Itens = p.ItemPedido.Select(i => new
                 {
-                    i.Produto.Nome,
+                    i.ProdutoNome,
                     i.Quantidade,
                     i.PrecoUnitario
                 }).ToList()

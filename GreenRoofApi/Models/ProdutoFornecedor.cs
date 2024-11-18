@@ -4,15 +4,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GreenRoofApi.Models
 {
-    public class Produto
+    public class ProdutoFornecedor
     {
         public int Id { get; set; }
 
         [Required]
         [StringLength(100)]
         public string Nome { get; set; }
-
-        public int LimiteMinimoEstoque { get; set; }
 
         [StringLength(255)]
         public string Descricao { get; set; }
@@ -29,12 +27,9 @@ namespace GreenRoofApi.Models
         [StringLength(50)]
         public string Tipo { get; set; }
 
-        [ForeignKey("Usuario")]
-        public int AdminId { get; set; }
-        public Usuario Admin { get; set; }
-
-        public virtual ICollection<ItemPedido> ItemPedido { get; set; }
-        public virtual InformacaoNutricional InformacoesNutricionais { get; set; }
+        [ForeignKey("Fornecedor")]
+        public int FornecedorId { get; set; }
+        public Fornecedor Fornecedor { get; set; }
 
     }
 }

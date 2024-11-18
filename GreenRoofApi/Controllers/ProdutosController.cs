@@ -2,6 +2,7 @@
 using GreenRoofApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace GreenRoofApi.Controllers
 {
@@ -10,10 +11,12 @@ namespace GreenRoofApi.Controllers
     public class ProdutosController : ControllerBase
     {
         private readonly ProdutoService _produtoService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public ProdutosController(ProdutoService produtoService)
+        public ProdutosController(ProdutoService produtoService, IHttpContextAccessor httpContextAccessor)
         {
             _produtoService = produtoService;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         [HttpGet]
@@ -35,7 +38,9 @@ namespace GreenRoofApi.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddProduto([FromBody] ProdutosRequestDTO produto)
         {
-            var newProduto = await _produtoService.CreateAsync(produto);
+            var userId = _httpContextAccessor.HttpContext.User.FindFirstValue("usuarioId");
+
+            var newProduto = await _produtoService.CreateAsync(produto, int.Parse(userId));
             return CreatedAtAction(nameof(GetProdutos), new { id = newProduto.Id }, newProduto);
         }
 
@@ -44,11 +49,12 @@ namespace GreenRoofApi.Controllers
         [Authorize(Roles = "Admin, Cliente")]
         public async Task<IActionResult> UpdateEstoque(int id, [FromBody] int quantidade)
         {
+            var userId = _httpContextAccessor.HttpContext.User.FindFirstValue("usuarioId");
             var produto = await _produtoService.GetByIdAsync(id);
             if (produto == null) return NotFound();
 
             produto.Quantidade = quantidade;
-            await _produtoService.UpdateAsync(produto);
+            await _produtoService.UpdateAsync(produto, int.Parse(userId));
 
             return NoContent();
         }

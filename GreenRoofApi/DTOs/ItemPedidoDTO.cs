@@ -6,16 +6,14 @@ namespace GreenRoofApi.DTOs
     {
         public int Id { get; set; }
         public int PedidoId { get; set; }
-        [JsonIgnore]
-        public PedidoDTO? Pedido { get; set; }
         public int ProdutoId { get; set; }
-        public ProdutoDTO? Produto { get; set; }
+        public string ProdutoNome { get; set; }
         public int Quantidade { get; set; }
         public decimal PrecoUnitario { get; set; }
-        public decimal Preco { get; set; }
     }
 
-    public class ItensPedidosDTO
+
+    public class ItensPedidosRequestDTO
     {
         public int PedidoId { get; set; }
         public int ProdutoId { get; set; }

@@ -54,13 +54,14 @@ builder.Services.AddScoped<PedidoService>();
 builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<PagamentoService>();
 builder.Services.AddScoped<InformacaoNutricionalService>();
+builder.Services.AddScoped<ProdutoFornecedorService>();
+builder.Services.AddScoped<ProducaoCultivoService>();
 builder.Services.AddHttpClient();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
      {
-         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
          options.JsonSerializerOptions.WriteIndented = true;
      });
 builder.Services.AddEndpointsApiExplorer();
@@ -89,7 +90,7 @@ builder.Services.AddSwaggerGen(c =>
                     Id = "Bearer"
                 }
             },
-            new string[] {}
+            Array.Empty<string>()
         }
     });
 });

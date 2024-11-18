@@ -52,7 +52,7 @@ namespace GreenRoofApi.Services
                 Email = usuarioDTO.Email,
                 Senha = usuarioDTO.Senha,
                 Role = usuarioDTO.Role, 
-                DeveTrocarSenha = usuarioDTO.Role == "Admin" ? false : true
+                DeveTrocarSenha = usuarioDTO.Role != "Admin"
             };
 
             _context.Usuarios.Add(usuario);
@@ -144,7 +144,7 @@ namespace GreenRoofApi.Services
                 Role = usuarioDTO.Role,
             };
 
-            novoUsuario.Role = char.ToUpper(novoUsuario.Role[0]) + novoUsuario.Role.Substring(1).ToLower();
+            novoUsuario.Role = char.ToUpper(novoUsuario.Role[0]) + novoUsuario.Role[1..].ToLower();
 
             _context.Usuarios.Add(novoUsuario);
             await _context.SaveChangesAsync();

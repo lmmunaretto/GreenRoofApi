@@ -26,6 +26,7 @@ namespace GreenRoofApi.Models
 
         public ICollection<Cliente> Clientes { get; set; }
         public ICollection<Fornecedor> Fornecedores { get; set; }
+        public ICollection<Produto> Produtos { get; set; }
 
     }
 }

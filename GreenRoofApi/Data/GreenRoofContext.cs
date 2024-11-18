@@ -11,11 +11,13 @@ namespace GreenRoofApi.Data
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Fornecedor> Fornecedores { get; set; }
         public DbSet<Produto> Produtos { get; set; }
+        public DbSet<ProdutoFornecedor> ProdutosFornecedor { get; set; }
         public DbSet<Pedido> Pedidos { get; set; }
         public DbSet<ItemPedido> ItensPedidos { get; set; }
         public DbSet<Pagamento> Pagamentos { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
         public DbSet<InformacaoNutricional> InformacoesNutricionais { get; set; }
+        public DbSet<ProducaoCultivo> ProducaoCultivo { get; set; }
 
         // Configurações adicionais
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -62,11 +64,69 @@ namespace GreenRoofApi.Data
                 entity.Property(p => p.Preco).HasColumnName("preco").IsRequired().HasColumnType("numeric(10,2)");
                 entity.Property(p => p.Tipo).HasColumnName("tipo").IsRequired().HasMaxLength(50);
                 entity.Property(p => p.LimiteMinimoEstoque).HasColumnName("limite_min_etq");
-                entity.Property(p => p.FornecedorId).HasColumnName("fornecedor_id");
-                entity.HasOne(p => p.Fornecedor)
+                entity.Property(p => p.AdminId).HasColumnName("admin_id");
+                entity.HasOne(p => p.Admin)
                       .WithMany(f => f.Produtos)
-                      .HasForeignKey(p => p.FornecedorId)
+                      .HasForeignKey(p => p.AdminId)
                       .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<ProdutoFornecedor>(entity =>
+            {
+                entity.ToTable("produtos_fornecedor");
+                entity.HasKey(p => p.Id);
+                entity.Property(p => p.Id).HasColumnName("id");
+
+                entity.Property(p => p.Nome)
+                      .HasColumnName("nome")
+                      .IsRequired()
+                      .HasMaxLength(100);
+
+                entity.Property(p => p.Descricao)
+                      .HasColumnName("descricao")
+                      .HasMaxLength(255);
+
+                entity.Property(p => p.Quantidade)
+                      .HasColumnName("quantidade");
+
+                entity.Property(p => p.Preco)
+                      .HasColumnName("preco")
+                      .IsRequired()
+                      .HasColumnType("numeric(10,2)");
+
+                entity.Property(p => p.Tipo)
+                      .HasColumnName("tipo")
+                      .IsRequired()
+                      .HasMaxLength(50);
+
+                entity.Property(p => p.FornecedorId)
+                      .HasColumnName("fornecedor_id");
+
+                entity.HasOne(p => p.Fornecedor)
+                      .WithMany(f => f.ProdutosFornecedor)
+                      .HasForeignKey(p => p.FornecedorId)
+                      .OnDelete(DeleteBehavior.Cascade);
+            }); ;
+
+            modelBuilder.Entity<ProducaoCultivo>(entity =>
+            {
+                entity.ToTable("producao_cultivo");
+                entity.HasKey(p => p.Id);
+                entity.Property(p => p.Id).HasColumnName("id");
+                entity.Property(p => p.ProdutoId).HasColumnName("produto_id").IsRequired();
+                entity.Property(p => p.AdminId).HasColumnName("admin_id").IsRequired();
+                entity.Property(p => p.DataProducao).HasColumnName("data_producao").IsRequired().HasDefaultValueSql("CURRENT_DATE");
+                entity.Property(p => p.QuantidadeProduzida).HasColumnName("quantidade_produzida").IsRequired();
+
+                entity.HasOne(p => p.Produto)
+                      .WithMany()
+                      .HasForeignKey(p => p.ProdutoId)
+                      .OnDelete(DeleteBehavior.Cascade);
+
+                entity.HasOne(p => p.Admin)
+                      .WithMany()
+                      .HasForeignKey(p => p.AdminId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             // Configurações para a tabela Pedidos
@@ -140,6 +200,9 @@ namespace GreenRoofApi.Data
                       .WithOne(c => c.Admin)
                       .HasForeignKey(c => c.AdminId);
                 entity.HasMany(u => u.Fornecedores)
+                      .WithOne(f => f.Admin)
+                      .HasForeignKey(f => f.AdminId);
+                entity.HasMany(u => u.Produtos)
                       .WithOne(f => f.Admin)
                       .HasForeignKey(f => f.AdminId);
             });
