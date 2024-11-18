@@ -100,7 +100,7 @@ namespace GreenRoofApi.Services
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<Pedido> CreateAsync(PedidosRequestDTO pedidoDTO)
+        public async Task<PedidoDTO> CreateAsync(PedidosRequestDTO pedidoDTO)
         {
             var pedido = new Pedido
             {
@@ -119,6 +119,7 @@ namespace GreenRoofApi.Services
                 {
                     throw new Exception($"Estoque insuficiente para o produto: {produto?.Nome}");
                 }
+
                 produto.Quantidade -= itemDto.Quantidade;
 
                 var itemPedido = new ItemPedido
@@ -127,6 +128,7 @@ namespace GreenRoofApi.Services
                     Quantidade = itemDto.Quantidade,
                     PrecoUnitario = itemDto.PrecoUnitario
                 };
+
                 pedido.ItemPedido.Add(itemPedido);
                 pedido.TotalPedido += itemDto.PrecoUnitario * itemDto.Quantidade;
             }
@@ -134,8 +136,26 @@ namespace GreenRoofApi.Services
             _context.Pedidos.Add(pedido);
             await _context.SaveChangesAsync();
 
-            return pedido;
+            // Retornando apenas os dados necessários
+            return new PedidoDTO
+            {
+                Id = pedido.Id,
+                ClienteId = pedido.ClienteId,
+                DataPedido = pedido.DataPedido,
+                TotalPedido = pedido.TotalPedido,
+                Status = pedido.Status,
+                ItemPedido = pedido.ItemPedido.Select(i => new ItemPedidoDTO
+                {
+                    Id = i.Id,
+                    PedidoId = i.Pedido.Id,
+                    ProdutoId = i.Produto.Id,
+                    ProdutoNome = i.Produto.Nome,
+                    Quantidade = i.Quantidade,
+                    PrecoUnitario = i.PrecoUnitario
+                }).ToList()
+            };
         }
+
 
         public async Task<Pedido?> UpdateAsync(int id, PedidosRequestDTO pedidoDTO)
         {

@@ -37,22 +37,55 @@ namespace GreenRoofApi.Controllers
             return Ok(updatedPedido);
         }
 
-        // Listar pedidos
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPedido(int id)
         {
             var pedido = await _pedidoService.GetByIdAsync(id);
             if (pedido == null) return NotFound();
-            return Ok(pedido);
+
+            return Ok(new
+            {
+                pedido.Id,
+                pedido.ClienteId,
+                pedido.ClienteNome,
+                pedido.DataPedido,
+                pedido.TotalPedido,
+                pedido.Status,
+                itemPedido = pedido.ItemPedido.Select(i => new
+                {
+                    i.Id,
+                    i.ProdutoId,
+                    i.ProdutoNome,
+                    i.Quantidade,
+                    i.PrecoUnitario
+                }).ToList()
+            });
         }
 
-        // Listar pedidos
+        // Listar todos os pedidos de um cliente por ID
         [HttpGet("all/{id}")]
         public async Task<IActionResult> GetAllPedido(int id)
         {
-            var pedido = await _pedidoService.GetAllByIdAsync(id);
-            if (pedido == null) return NotFound();
-            return Ok(pedido);
+            var pedidos = await _pedidoService.GetAllByIdAsync(id);
+            if (pedidos == null) return NotFound();
+
+            return Ok(new
+            {
+                pedidos.Id,
+                pedidos.ClienteId,
+                pedidos.ClienteNome,
+                pedidos.DataPedido,
+                pedidos.TotalPedido,
+                pedidos.Status,
+                itemPedido = pedidos.ItemPedido.Select(i => new
+                {
+                    i.Id,
+                    i.ProdutoId,
+                    i.ProdutoNome,
+                    i.Quantidade,
+                    i.PrecoUnitario
+                }).ToList()
+            });
         }
 
         [HttpGet]
@@ -67,8 +100,9 @@ namespace GreenRoofApi.Controllers
                 p.DataPedido,
                 p.TotalPedido,
                 p.Status,
-                Itens = p.ItemPedido.Select(i => new
+                itemPedido = p.ItemPedido.Select(i => new
                 {
+                    i.Id,
                     i.ProdutoNome,
                     i.Quantidade,
                     i.PrecoUnitario
