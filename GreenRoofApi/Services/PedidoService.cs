@@ -30,6 +30,8 @@ namespace GreenRoofApi.Services
                     Status = p.Status,
                     ItemPedido = p.ItemPedido.Select(i => new ItemPedidoDTO
                     {
+                        Id = i.Id,
+                        PedidoId = i.Pedido.Id,
                         ProdutoId = i.Produto.Id,
                         ProdutoNome = i.Produto.Nome,
                         Quantidade = i.Quantidade,
@@ -56,6 +58,8 @@ namespace GreenRoofApi.Services
                     Status = p.Status,
                     ItemPedido = p.ItemPedido.Select(i => new ItemPedidoDTO
                     {
+                        Id = i.Id,
+                        PedidoId = i.Pedido.Id,
                         ProdutoId = i.Produto.Id,
                         ProdutoNome = i.Produto.Nome,
                         Quantidade = i.Quantidade,
@@ -85,6 +89,8 @@ namespace GreenRoofApi.Services
                     Status = p.Status,
                     ItemPedido = p.ItemPedido.Select(i => new ItemPedidoDTO
                     {
+                        Id = i.Id,
+                        PedidoId = i.Pedido.Id,
                         ProdutoId = i.Produto.Id,
                         ProdutoNome = i.Produto.Nome,
                         Quantidade = i.Quantidade,
