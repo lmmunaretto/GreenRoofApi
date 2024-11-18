@@ -54,6 +54,7 @@ namespace GreenRoofApi.Controllers
                 itemPedido = pedido.ItemPedido.Select(i => new
                 {
                     i.Id,
+                    i.PedidoId,
                     i.ProdutoId,
                     i.ProdutoNome,
                     i.Quantidade,
@@ -80,6 +81,7 @@ namespace GreenRoofApi.Controllers
                 itemPedido = pedidos.ItemPedido.Select(i => new
                 {
                     i.Id,
+                    i.PedidoId,
                     i.ProdutoId,
                     i.ProdutoNome,
                     i.Quantidade,
@@ -103,6 +105,8 @@ namespace GreenRoofApi.Controllers
                 itemPedido = p.ItemPedido.Select(i => new
                 {
                     i.Id,
+                    i.PedidoId,
+                    i.ProdutoId,
                     i.ProdutoNome,
                     i.Quantidade,
                     i.PrecoUnitario
